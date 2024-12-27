@@ -10,7 +10,7 @@ const MessagesView = () => {
     // Nachrichten für das ausgewählte Datum laden
    const fetchMessages = async () => {
   try {
-    const response = await axios.get(`https://daily-love-notes-api.onrender.com/messages?date=${date}`);
+    const response = await axios.get(`https://daily-love-notes-backend.onrender.com//messages?date=${date}`);
     setMessages(response.data);
   } catch (error) {
     console.error('Fehler beim Laden der Nachrichten:', error);
