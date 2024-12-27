@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/daily-love-notes/static/css/main.64f8e45f.css",
-    "main.js": "/daily-love-notes/static/js/main.364519ee.js",
+    "main.js": "/daily-love-notes/static/js/main.46b632e2.js",
     "static/js/488.874e3a2b.chunk.js": "/daily-love-notes/static/js/488.874e3a2b.chunk.js",
     "index.html": "/daily-love-notes/index.html",
     "main.64f8e45f.css.map": "/daily-love-notes/static/css/main.64f8e45f.css.map",
-    "main.364519ee.js.map": "/daily-love-notes/static/js/main.364519ee.js.map",
+    "main.46b632e2.js.map": "/daily-love-notes/static/js/main.46b632e2.js.map",
     "488.874e3a2b.chunk.js.map": "/daily-love-notes/static/js/488.874e3a2b.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.64f8e45f.css",
-    "static/js/main.364519ee.js"
+    "static/js/main.46b632e2.js"
   ]
 }
