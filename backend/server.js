@@ -7,7 +7,13 @@ const app = express();
 const PORT = 5000;
 
 // Middleware
-app.use(cors());
+const corsOptions = {
+  origin: 'https://markusbrandner.github.io', // GitHub Pages URL
+  methods: 'GET,POST',
+};
+
+app.use(cors(corsOptions));
+
 app.use(express.json());
 
 // File path
