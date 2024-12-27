@@ -8,14 +8,17 @@ const MessagesView = () => {
 
   useEffect(() => {
     // Nachrichten für das ausgewählte Datum laden
-   const fetchMessages = async () => {
+ const fetchMessages = async () => {
   try {
-    const response = await axios.get(`https://daily-love-notes-backend.onrender.com//messages?date=${date}`);
+    console.log('Fetching messages for date:', date); // Debug-Log
+    const response = await axios.get(`https://daily-love-notes-backend.onrender.com/messages?date=${date}`);
+    console.log('API response:', response.data); // Debug-Log
     setMessages(response.data);
   } catch (error) {
     console.error('Fehler beim Laden der Nachrichten:', error);
   }
 };
+
 
 
     fetchMessages();
