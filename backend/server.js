@@ -1,48 +1,56 @@
-// Import modules
+// Importing required modules
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
+const path = require('path');
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Define allowed CORS origin
-const corsOptions = {
-  origin: 'https://markusbrandner.github.io',
-  optionsSuccessStatus: 200
-};
+// Enable CORS
+app.use(cors());
 
-app.use(cors(corsOptions));
+// Middleware to parse JSON
+app.use(express.json());
 
-// Route to fetch messages
+// API endpoint to fetch messages by date
 app.get('/messages', (req, res) => {
-  const { date } = req.query;
-  if (!date) {
-    return res.status(400).json({ error: 'Date parameter is required' });
-  }
+    const date = req.query.date;
 
-  fs.readFile('messages.json', 'utf8', (err, data) => {
-    if (err) {
-      console.error('Error reading messages.json:', err);
-      return res.status(500).json({ error: 'Internal server error' });
+    if (!date) {
+        return res.status(400).json({ error: 'Date query parameter is required' });
     }
 
-    try {
-      const messages = JSON.parse(data);
-      const filteredMessages = messages.filter(msg => msg.date === date);
-      
-      if (filteredMessages.length === 0) {
-        return res.status(404).json({ error: 'No messages found for the given date' });
-      }
+    const filePath = path.join(__dirname, 'messages.json');
 
-      res.json(filteredMessages);
-    } catch (parseError) {
-      console.error('Error parsing messages.json:', parseError);
-      return res.status(500).json({ error: 'Invalid JSON format in messages.json' });
-    }
-  });
+    fs.readFile(filePath, 'utf8', (err, data) => {
+        if (err) {
+            console.error('Error reading messages.json:', err);
+            return res.status(500).json({ error: 'Failed to read messages file' });
+        }
+
+        try {
+            const messages = JSON.parse(data);
+
+            if (!Array.isArray(messages)) {
+                throw new Error('Invalid messages format in JSON file');
+            }
+
+            const messageForDate = messages.find(msg => msg.date === date);
+
+            if (!messageForDate) {
+                return res.status(404).json({ message: 'No messages found for this date' });
+            }
+
+            res.json(messageForDate);
+        } catch (parseError) {
+            console.error('Error parsing messages.json:', parseError);
+            res.status(500).json({ error: 'Failed to parse messages file' });
+        }
+    });
 });
 
 // Start the server
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Server is running on http://localhost:${PORT}`);
 });
