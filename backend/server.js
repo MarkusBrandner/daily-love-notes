@@ -21,7 +21,8 @@ app.get('/messages', (req, res) => {
         return res.status(400).json({ error: 'Date query parameter is required' });
     }
 
-    const filePath = path.join(__dirname, 'messages.json');
+    // Adjusted file path to locate messages.json in backend/data
+    const filePath = path.join(__dirname, 'data', 'messages.json');
 
     fs.readFile(filePath, 'utf8', (err, data) => {
         if (err) {
