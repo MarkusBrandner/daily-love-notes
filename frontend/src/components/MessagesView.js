@@ -26,11 +26,10 @@ const MessagesView = ({ date }) => {
   return (
     <div>
       <h1>Nachrichten für {date}</h1>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {message ? (
+      {message !== null ? (
         <p>{message}</p>
       ) : (
-        !error && <p>Keine Nachrichten für dieses Datum.</p>
+        error ? <p style={{ color: 'red' }}>{error}</p> : <p>Keine Nachrichten für dieses Datum.</p>
       )}
     </div>
   );
