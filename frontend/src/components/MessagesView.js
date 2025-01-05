@@ -1,44 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 const MessagesView = ({ date }) => {
-    const [message, setMessage] = useState('');
-    const [error, setError] = useState('');
+  const [message, setMessage] = useState(null);
+  const [error, setError] = useState(null);
 
-    useEffect(() => {
-        if (!date) return;
+  useEffect(() => {
+    const fetchMessage = async () => {
+      try {
+        const response = await axios.get(`https://daily-love-notes-backend.onrender.com/messages?date=${date}`);
+        if (response.data && response.data.message) {
+          setMessage(response.data.message);
+        } else {
+          setMessage(null);
+        }
+      } catch (err) {
+        console.error('Error fetching message:', err);
+        setError('Fehler beim Laden der Nachricht.');
+      }
+    };
 
-        const fetchMessage = async () => {
-            try {
-                const response = await axios.get(`https://daily-love-notes-backend.onrender.com/messages?date=${date}`);
-                
-                if (response.data && response.data.message) {
-                    setMessage(response.data.message);
-                } else {
-                    setMessage('Keine Nachrichten für dieses Datum.');
-                }
+    fetchMessage();
+  }, [date]);
 
-                setError(''); // Clear any previous errors
-            } catch (err) {
-                console.error('Fehler beim Laden der Nachrichten:', err);
-                setError('Fehler beim Laden der Nachrichten.');
-                setMessage('');
-            }
-        };
-
-        fetchMessage();
-    }, [date]);
-
-    return (
-        <div>
-            <h1>Nachrichten für {date}</h1>
-            {error ? (
-                <p style={{ color: 'red' }}>{error}</p>
-            ) : (
-                <p>{message}</p>
-            )}
-        </div>
-    );
+  return (
+    <div>
+      <h1>Nachrichten für {date}</h1>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {message ? (
+        <p>{message}</p>
+      ) : (
+        !error && <p>Keine Nachrichten für dieses Datum.</p>
+      )}
+    </div>
+  );
 };
 
 export default MessagesView;
