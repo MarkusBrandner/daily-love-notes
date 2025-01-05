@@ -1,41 +1,44 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const MessagesView = () => {
-  const { date } = useParams(); // Das Datum aus der URL
-  const [messages, setMessages] = useState([]);
+const MessagesView = ({ date }) => {
+    const [message, setMessage] = useState('');
+    const [error, setError] = useState('');
 
-  useEffect(() => {
-    // Nachrichten für das ausgewählte Datum laden
-    const fetchMessages = async () => {
-      try {
-        console.log('Fetching messages for date:', date); // Debug-Log
-        const response = await axios.get(`https://daily-love-notes-backend.onrender.com/messages?date=${date}`);
-        console.log('API response:', response.data); // Debug-Log
-        setMessages(response.data);
-      } catch (error) {
-        console.error('Fehler beim Laden der Nachrichten:', error);
-      }
-    };
+    useEffect(() => {
+        if (!date) return;
 
-    fetchMessages();
-  }, [date]);
+        const fetchMessage = async () => {
+            try {
+                const response = await axios.get(`https://daily-love-notes-backend.onrender.com/messages?date=${date}`);
+                
+                if (response.data && response.data.message) {
+                    setMessage(response.data.message);
+                } else {
+                    setMessage('Keine Nachrichten für dieses Datum.');
+                }
 
-  return (
-    <div style={{ padding: '20px' }}>
-      <h1>Nachrichten für {date}</h1>
-      {messages.length > 0 ? (
-        <ul>
-          {messages.map((msg, index) => (
-            <li key={index}>{msg.message}</li>
-          ))}
-        </ul>
-      ) : (
-        <p>Keine Nachrichten für dieses Datum.</p>
-      )}
-    </div>
-  );
+                setError(''); // Clear any previous errors
+            } catch (err) {
+                console.error('Fehler beim Laden der Nachrichten:', err);
+                setError('Fehler beim Laden der Nachrichten.');
+                setMessage('');
+            }
+        };
+
+        fetchMessage();
+    }, [date]);
+
+    return (
+        <div>
+            <h1>Nachrichten für {date}</h1>
+            {error ? (
+                <p style={{ color: 'red' }}>{error}</p>
+            ) : (
+                <p>{message}</p>
+            )}
+        </div>
+    );
 };
 
 export default MessagesView;
