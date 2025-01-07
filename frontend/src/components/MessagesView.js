@@ -2,29 +2,28 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 const Messages = () => {
-  const { date } = useParams(); // Das Datum aus der URL holen
+  const { date } = useParams(); // Datum aus der URL
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Die API für das Datum abfragen
     const fetchMessage = async () => {
       try {
-        const response = await fetch(`https://deine-api-url.com/messages/${date}`);
+        const response = await fetch(`https://markusbrandner.github.io/daily-love-notes/api/messages/${date}`);
         if (!response.ok) {
-          throw new Error('Fehler beim Abrufen der Daten');
+          throw new Error(`Fehler: ${response.status}`);
         }
         const data = await response.json();
 
-        // Überprüfen, ob eine Nachricht für das Datum vorhanden ist
-        if (data.message) {
+        // Überprüfen, ob die Nachricht existiert
+        if (data && data.message) {
           setMessage(data.message);
         } else {
           setMessage('Keine Nachrichten für dieses Datum.');
         }
       } catch (err) {
-        setError('Fehler beim Laden der Nachricht.');
+        setError('Fehler beim Abrufen der Nachricht.');
       } finally {
         setLoading(false);
       }
