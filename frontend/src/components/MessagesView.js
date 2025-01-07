@@ -9,12 +9,18 @@ const Messages = () => {
 
   useEffect(() => {
     const fetchMessage = async () => {
+      console.log(`Versuche, Nachrichten für Datum ${date} zu laden...`); // Debugging
+
       try {
         const response = await fetch(`https://markusbrandner.github.io/daily-love-notes/api/messages/${date}`);
+        
+        // Überprüfe, ob die Antwort erfolgreich ist
         if (!response.ok) {
           throw new Error(`Fehler: ${response.status}`);
         }
+
         const data = await response.json();
+        console.log('Antwort der API:', data); // Debugging
 
         // Überprüfen, ob die Nachricht existiert
         if (data && data.message) {
@@ -23,6 +29,7 @@ const Messages = () => {
           setMessage('Keine Nachrichten für dieses Datum.');
         }
       } catch (err) {
+        console.error('Fehler beim Abrufen der Nachricht:', err); // Debugging
         setError('Fehler beim Abrufen der Nachricht.');
       } finally {
         setLoading(false);
