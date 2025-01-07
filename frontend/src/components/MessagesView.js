@@ -1,24 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
 
-const MessagesView = () => {
-  const { date } = useParams(); // Das Datum aus der URL
-  const [message, setMessage] = useState(null); // Ein einzelnes Objekt
-  const [error, setError] = useState(null);
+const Messages = () => {
+  const { date } = useParams(); // Das Datum aus der URL holen
+  const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
+    // Die API für das Datum abfragen
     const fetchMessage = async () => {
-      setLoading(true);
-      setError(null);
       try {
-        console.log('Fetching message for date:', date); // Debug-Log
-        const response = await axios.get(`https://daily-love-notes-backend.onrender.com/messages?date=${date}`);
-        console.log('API response:', response.data); // Debug-Log
-        setMessage(response.data); // Speichert die API-Daten im State
-      } catch (error) {
-        console.error('Fehler beim Laden der Nachricht:', error);
+        const response = await fetch(`https://deine-api-url.com/messages/${date}`);
+        if (!response.ok) {
+          throw new Error('Fehler beim Abrufen der Daten');
+        }
+        const data = await response.json();
+
+        // Überprüfen, ob eine Nachricht für das Datum vorhanden ist
+        if (data.message) {
+          setMessage(data.message);
+        } else {
+          setMessage('Keine Nachrichten für dieses Datum.');
+        }
+      } catch (err) {
         setError('Fehler beim Laden der Nachricht.');
       } finally {
         setLoading(false);
@@ -28,20 +33,20 @@ const MessagesView = () => {
     fetchMessage();
   }, [date]);
 
-  console.log('Rendering with message:', message); // Debug-Log
+  if (loading) {
+    return <div>Lade Nachricht...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1>Nachricht für {date}</h1>
-      {loading && <p>Lädt...</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {!loading && !error && message ? ( // Prüfen, ob `message` existiert
-        <p>{message.message}</p> // Nachricht anzeigen
-      ) : (
-        !loading && !error && <p>Keine Nachrichten für dieses Datum.</p>
-      )}
+    <div>
+      <h1>Nachrichten für {date}</h1>
+      <p>{message}</p>
     </div>
   );
 };
 
-export default MessagesView;
+export default Messages;
