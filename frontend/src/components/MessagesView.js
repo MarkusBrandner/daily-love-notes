@@ -35,8 +35,8 @@ const MessagesView = () => {
       <h1>Nachricht für {date}</h1>
       {loading && <p>Lädt...</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
-      {message && message.message ? ( // Prüfen, ob `message` und `message.message` existieren
-        <p>{message.message}</p>
+      {!loading && !error && message ? ( // Prüfen, ob `message` existiert
+        <p>{message.message}</p> // Nachricht anzeigen
       ) : (
         !loading && !error && <p>Keine Nachrichten für dieses Datum.</p>
       )}
