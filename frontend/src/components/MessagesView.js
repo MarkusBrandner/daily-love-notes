@@ -9,7 +9,6 @@ const MessagesView = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Nachricht für das ausgewählte Datum laden
     const fetchMessage = async () => {
       setLoading(true);
       setError(null);
@@ -17,8 +16,7 @@ const MessagesView = () => {
         console.log('Fetching message for date:', date); // Debug-Log
         const response = await axios.get(`https://daily-love-notes-backend.onrender.com/messages?date=${date}`);
         console.log('API response:', response.data); // Debug-Log
-        setMessage(response.data); // API-Response wird als einzelnes Objekt gespeichert
-        console.log('Message State:', response.data); // Überprüfen, ob der State korrekt ist
+        setMessage(response.data); // Speichert die API-Daten im State
       } catch (error) {
         console.error('Fehler beim Laden der Nachricht:', error);
         setError('Fehler beim Laden der Nachricht.');
@@ -30,12 +28,14 @@ const MessagesView = () => {
     fetchMessage();
   }, [date]);
 
+  console.log('Rendering with message:', message); // Debug-Log
+
   return (
     <div style={{ padding: '20px' }}>
       <h1>Nachricht für {date}</h1>
       {loading && <p>Lädt...</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
-      {!loading && !error && message && message.message ? ( // Prüft, ob `message` existiert
+      {message && message.message ? ( // Prüfen, ob `message` und `message.message` existieren
         <p>{message.message}</p>
       ) : (
         !loading && !error && <p>Keine Nachrichten für dieses Datum.</p>
