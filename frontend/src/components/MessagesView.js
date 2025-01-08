@@ -3,56 +3,61 @@ import { useParams } from 'react-router-dom';
 
 const Messages = () => {
   const { date } = useParams(); // Datum aus der URL
-  const [message, setMessage] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [message, setMessage] = useState(null); // Nachricht
+  const [loading, setLoading] = useState(true); // Ladevorgang
+  const [error, setError] = useState(null); // Fehler
 
   useEffect(() => {
     const fetchMessage = async () => {
-      console.log(`Lade Nachricht für Datum: ${date}`); // Debugging
+      console.log(`Lade Nachricht für Datum: ${date}`); // Debugging: Datum aus URL
 
       try {
-        const response = await fetch(`https://markusbrandner.github.io/daily-love-notes/api/messages/${date}`, {
-          mode: 'cors', // Sicherheitshalber
-        });
+        const response = await fetch(
+          `https://markusbrandner.github.io/daily-love-notes/api/messages/${date}.json`
+        );
 
+        // Überprüfen, ob die Antwort erfolgreich ist
         if (!response.ok) {
-          throw new Error(`Fehler: ${response.status}`);
+          throw new Error(`Fehler beim Abrufen: ${response.status}`);
         }
 
         const data = await response.json();
-        console.log('API-Daten:', data); // Debugging
+        console.log('API-Daten:', data); // Debugging: API-Antwort prüfen
 
-        if (data && data.message) {
-          console.log('Setze Nachricht:', data.message);
+        // Nachricht aus der API-Antwort setzen
+        if (data.message) {
+          console.log('Setze Nachricht:', data.message); // Debugging
           setMessage(data.message);
         } else {
           console.log('Keine Nachricht gefunden.');
           setMessage('Keine Nachrichten für dieses Datum.');
         }
       } catch (err) {
-        console.error('Fehler beim Abrufen der Nachricht:', err);
+        console.error('Fehler beim Abrufen der Nachricht:', err); // Debugging
         setError('Fehler beim Abrufen der Nachricht.');
       } finally {
-        setLoading(false);
+        setLoading(false); // Ladevorgang abschließen
       }
     };
 
     fetchMessage();
   }, [date]);
 
+  // Anzeige während des Ladens
   if (loading) {
     return <div>Lade Nachricht...</div>;
   }
 
+  // Anzeige bei Fehlern
   if (error) {
     return <div>{error}</div>;
   }
 
+  // Anzeige der Nachricht
   return (
     <div>
       <h1>Nachrichten für {date}</h1>
-      <p>{message}</p>
+      <p>{message || 'Keine Nachricht gefunden.'}</p>
     </div>
   );
 };
