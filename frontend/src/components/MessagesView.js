@@ -9,27 +9,29 @@ const Messages = () => {
 
   useEffect(() => {
     const fetchMessage = async () => {
-      console.log(`Versuche, Nachrichten für Datum ${date} zu laden...`); // Debugging
+      console.log(`Lade Nachricht für Datum: ${date}`); // Debugging
 
       try {
-        const response = await fetch(`https://markusbrandner.github.io/daily-love-notes/api/messages/${date}`);
-        
-        // Überprüfe, ob die Antwort erfolgreich ist
+        const response = await fetch(`https://markusbrandner.github.io/daily-love-notes/api/messages/${date}`, {
+          mode: 'cors', // Sicherheitshalber
+        });
+
         if (!response.ok) {
           throw new Error(`Fehler: ${response.status}`);
         }
 
         const data = await response.json();
-        console.log('Antwort der API:', data); // Debugging
+        console.log('API-Daten:', data); // Debugging
 
-        // Überprüfen, ob die Nachricht existiert
         if (data && data.message) {
+          console.log('Setze Nachricht:', data.message);
           setMessage(data.message);
         } else {
+          console.log('Keine Nachricht gefunden.');
           setMessage('Keine Nachrichten für dieses Datum.');
         }
       } catch (err) {
-        console.error('Fehler beim Abrufen der Nachricht:', err); // Debugging
+        console.error('Fehler beim Abrufen der Nachricht:', err);
         setError('Fehler beim Abrufen der Nachricht.');
       } finally {
         setLoading(false);
