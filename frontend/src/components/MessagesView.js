@@ -3,38 +3,40 @@ import { useParams } from 'react-router-dom';
 
 const Messages = () => {
   const { date } = useParams(); // Datum aus der URL
-  const [message, setMessage] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [message, setMessage] = useState(null); // Nachricht für das Datum
+  const [loading, setLoading] = useState(true); // Ladevorgang
+  const [error, setError] = useState(null); // Fehlerstatus
 
   useEffect(() => {
     const fetchMessage = async () => {
-      console.log(`Lade Nachricht für Datum: ${date}`); // Debugging: Datum aus URL
+      console.log(`Lade Nachricht für Datum: ${date}`); // Debugging: Aktuelles Datum
 
       try {
-        // Passe die URL je nach Backend-Setup an
+        // API-URL, passe sie an, falls nötig
         const response = await fetch('http://localhost:3000/data/messages.json');
 
+        // Überprüfen, ob die Antwort erfolgreich ist
         if (!response.ok) {
-          throw new Error(`Fehler beim Abrufen: ${response.status}`);
+          throw new Error(`Fehler beim Abrufen der Daten: ${response.status}`);
         }
 
         const data = await response.json();
-        console.log('API-Daten:', data); // Debugging: API-Antwort prüfen
+        console.log('API-Daten:', data); // Debugging: Die gesamte JSON-Antwort
 
-        // Nachricht für das Datum extrahieren
+        // Nachricht für das aktuelle Datum extrahieren
         if (data[date] && data[date].message) {
-          console.log('Setze Nachricht:', data[date].message); // Debugging
+          console.log('Setze Nachricht:', data[date].message); // Debugging: Gefundene Nachricht
           setMessage(data[date].message);
         } else {
           console.log('Keine Nachricht für dieses Datum gefunden.');
           setMessage('Keine Nachrichten für dieses Datum.');
         }
       } catch (err) {
-        console.error('Fehler beim Abrufen der Nachricht:', err); // Debugging
+        console.error('Fehler beim Abrufen der Nachricht:', err); // Debugging: Fehlerbeschreibung
         setError('Fehler beim Abrufen der Nachricht.');
       } finally {
-        setLoading(false); // Ladevorgang abschließen
+        setLoading(false); // Ladezustand abschließen
+        console.log('Ladevorgang abgeschlossen.'); // Debugging
       }
     };
 
