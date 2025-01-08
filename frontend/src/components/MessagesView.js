@@ -12,8 +12,9 @@ const Messages = () => {
       console.log(`Lade Nachricht für Datum: ${date}`); // Debugging: Datum aus URL
 
       try {
+        // URL zur zentralen messages.json
         const response = await fetch(
-          `https://markusbrandner.github.io/daily-love-notes/api/messages/${date}.json`
+          'https://markusbrandner.github.io/daily-love-notes/api/messages.json'
         );
 
         // Überprüfen, ob die Antwort erfolgreich ist
@@ -24,12 +25,12 @@ const Messages = () => {
         const data = await response.json();
         console.log('API-Daten:', data); // Debugging: API-Antwort prüfen
 
-        // Nachricht aus der API-Antwort setzen
-        if (data.message) {
-          console.log('Setze Nachricht:', data.message); // Debugging
-          setMessage(data.message);
+        // Nachricht für das Datum extrahieren
+        if (data[date] && data[date].message) {
+          console.log('Setze Nachricht:', data[date].message); // Debugging
+          setMessage(data[date].message);
         } else {
-          console.log('Keine Nachricht gefunden.');
+          console.log('Keine Nachricht für dieses Datum gefunden.');
           setMessage('Keine Nachrichten für dieses Datum.');
         }
       } catch (err) {
